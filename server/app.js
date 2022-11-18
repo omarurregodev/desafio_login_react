@@ -1,16 +1,28 @@
 import express from "express";
-import bp from "body-parser";
+import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import session from "express-session";
+import MongoStore from 'connect-mongo'; 
 
 //aqui importo el sistema de ruteo
 import mainRoutes from "./routes/mainRoutes.js";
 
 const app = express();
-
+const advancedOptions = {useNewUrlParser: true, useUnifiedTopology: true};
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true
+  })
+);
+app.use(cookieParser());
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded());
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Origin", req.headers.origin);
@@ -25,16 +37,28 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(session({
+  //MongoStorage
+  store: MongoStore.create({
+    mongoUrl:'mongodb+srv://omarurregodev:oturrego0712@normalizrcluster.u64wunr.mongodb.net/?retryWrites=true&w=majority',
+    mongoOptions: advancedOptions
+  }),
+  name: 'currentSession',
+  secret: 'its my secret',
+  cookie: { maxAge: 60000 }, // value of maxAge is defined in milliseconds. 
+  resave: false,
+  rolling: false,
+  saveUninitialized: false
+}));
+
+
+
 app.use("/api", mainRoutes);
 
+
+
 // enabilito los PORT con un limite de subida de 30MB
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true
-  })
-);
+
 
 // aqui tienes que hacer tu base de datos cloud.mongodb.com
 // variable de contrasenia de prefencia en archivo .ENV

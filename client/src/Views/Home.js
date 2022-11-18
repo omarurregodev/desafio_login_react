@@ -4,8 +4,16 @@ import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
   const navigate = useNavigate();
-  const handleLogOut = () => {
-    navigate("/logout");
+  const handleLogOut = async () => {
+    try {
+      const {data:response} = await axios.get(
+        "http://localhost:8000/api/logout"
+      );
+      console.log(response);
+      navigate("/logout");
+    } catch (e) {
+      
+    }
   };
 
   const [data, setData] = useState();
@@ -18,6 +26,7 @@ export const Home = () => {
         const { data: response } = await axios.get(
           "http://localhost:8000/api/user"
         );
+        console.log(response);
         setData(response);
       } catch (e) {
         console.log(e);
@@ -28,16 +37,15 @@ export const Home = () => {
   }, []);
   return (
     <div>
-      <button onClick={handleLogOut}>Log Out</button>
       {loading ? (
         <>Loading...</>
-      ) : (
-        <>
+        ) : (
+          <>
           {" "}
-          este es el username:{data.username} Esta es la contraseña
-          {data.password}
+          Bienvenido {data}!
         </>
       )}
+      <button onClick={handleLogOut}>Log Out</button>
     </div>
   );
 };

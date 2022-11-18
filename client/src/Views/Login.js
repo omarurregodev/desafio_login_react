@@ -4,18 +4,24 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data: response } = axios.post(
+      const { data:response } = await axios.post(
         "http://localhost:8000/api/login",
-        { username, password },
-        { headers: {} }
+        { username }, // falta agregar password {username, password}
+        { headers: {} },
+        {
+          withCredentials: true
+        }
       );
       console.log(response);
-      navigate("/home");
+      if (response.status === "success") {
+        navigate("/home");
+        window.location.reload();
+      }
     } catch (e) {
       console.error(e);
     }
@@ -27,11 +33,11 @@ const Login = () => {
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       ></input>
-      <input
+      {/* <input
         placeholder="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-      ></input>
+      ></input> */}
       <button type="submit">login</button>
     </form>
   );
