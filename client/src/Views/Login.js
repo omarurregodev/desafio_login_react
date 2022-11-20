@@ -19,8 +19,9 @@ const Login = () => {
       );
       console.log(response);
       if (response.status === "success") {
-        navigate("/home");
-        window.location.reload();
+        console.log(response);
+        navigate(`/home?name=${response.name}`);
+        //window.location.reload();
       }
     } catch (e) {
       console.error(e);

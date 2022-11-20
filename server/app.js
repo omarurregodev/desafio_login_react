@@ -15,12 +15,14 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true
+    credentials: true,
   })
 );
 app.use(cookieParser());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -45,10 +47,12 @@ app.use(session({
   }),
   name: 'currentSession',
   secret: 'its my secret',
-  cookie: { maxAge: 60000 }, // value of maxAge is defined in milliseconds. 
+  cookie: { 
+    maxAge: 60000,
+    secure: true
+   }, // value of maxAge is defined in milliseconds. 
   resave: false,
-  rolling: false,
-  saveUninitialized: false
+  saveUninitialized: false,
 }));
 
 

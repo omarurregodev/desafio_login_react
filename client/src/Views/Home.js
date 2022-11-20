@@ -26,7 +26,7 @@ export const Home = () => {
         const { data: response } = await axios.get(
           "http://localhost:8000/api/user"
         );
-        console.log(response);
+        console.log("respuesta", response);
         setData(response);
       } catch (e) {
         console.log(e);

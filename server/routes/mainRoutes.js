@@ -12,19 +12,17 @@ const router = express.Router();
 //ROUTE DE LOGGEO DE USUARIO
 //Creación de la sesión
 router.post("/login", (req, res) => {
-  try {
-    req.session.contador = req.session.contador ? req.session.contador + 1 : 1
-    req.session.username = req.body.username;
+  // try {
+    req.session.nombre = req.body.username;
     res.status(200).json({
-    status: "success",
-    message: "Inicio de sesión exitoso!",
-    id_session: req.session.id
+      status: "success",
+      id_session: req.session.id,
+      name: req.session.nombre
     });
-  } catch (e) {
-    res.status(500).json({ status: 'error', message: 'Algo salio mal al hacer login' });
-  }
+  // } catch (e) {
+  //   res.status(500).json({ status: 'error', message: 'Algo salio mal al hacer login' });
+  // }
 });
-
 // Destruyo la sesion
 
 router.get('/logout', (req, res) => {
@@ -44,10 +42,12 @@ router.get('/logout', (req, res) => {
 
 router.get("/user", (req, res) => {
       const sessionId = req.session.id;
-      const username = req.session.username;
       
-      console.log(sessionId, username);
-      res.status(200).json(sessionId);
+      const username = req.query.name;
+
+      
+      console.log(req.query);
+      res.send(req.query.name);
   });
 
 export default router;
