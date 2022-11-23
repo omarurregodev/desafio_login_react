@@ -1,5 +1,4 @@
 import express from "express";
-import mongoose from "mongoose";
 
 //aqui se importan los controladores
 // import { loginUser, getUser } from "../controllers/loginControllers.js";
@@ -12,16 +11,25 @@ const router = express.Router();
 //ROUTE DE LOGGEO DE USUARIO
 //Creación de la sesión
 router.post("/login", (req, res) => {
-  // try {
-    req.session.nombre = req.body.username;
-    res.status(200).json({
-      status: "success",
-      id_session: req.session.id,
-      name: req.session.nombre
-    });
-  // } catch (e) {
-  //   res.status(500).json({ status: 'error', message: 'Algo salio mal al hacer login' });
-  // }
+  try {
+    if (req.session.contador) {
+      req.session.contador++;
+      console.log("ya creada");
+      res.send(req.session);
+    } else {
+      console.log("creando");
+      req.session.contador = 1;
+      req.session.name = req.body.username;
+      req.session.status = "success";
+      console.log(req.session.name);
+      req.session.save(() => {
+        console.log(req.session);
+        res.status(200).send(req.session)
+      });
+    }
+  } catch (e) {
+    res.status(500).json({ status: 'error', message: 'Algo salio mal al hacer login' });
+  }
 });
 // Destruyo la sesion
 
@@ -41,13 +49,9 @@ router.get('/logout', (req, res) => {
 //Llamo al user en sesion
 
 router.get("/user", (req, res) => {
-      const sessionId = req.session.id;
-      
-      const username = req.query.name;
-
-      
-      console.log(req.query);
-      res.send(req.query.name);
-  });
+  
+  console.log("en el otro lado", req.session);
+  res.status(200).json({name:req.session.name});
+});
 
 export default router;

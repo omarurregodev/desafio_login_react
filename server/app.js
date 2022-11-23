@@ -14,10 +14,25 @@ const advancedOptions = {useNewUrlParser: true, useUnifiedTopology: true};
 app.use(
   cors({
     origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: "GET,POST",
     credentials: true,
   })
 );
+
+app.use(session({
+  //MongoStorage
+  store: MongoStore.create({
+    mongoUrl:'mongodb+srv://omarurregodev:oturrego0712@normalizrcluster.u64wunr.mongodb.net/?retryWrites=true&w=majority',
+    mongoOptions: advancedOptions
+  }),
+  key: 'currentSession',
+  secret: 'its my secret',
+  cookie: { 
+    maxAge: 1000 * 60,
+   }, // value of maxAge is defined in milliseconds. 
+  resave: true,
+  saveUninitialized: true,
+}));
 app.use(cookieParser());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -39,21 +54,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(session({
-  //MongoStorage
-  store: MongoStore.create({
-    mongoUrl:'mongodb+srv://omarurregodev:oturrego0712@normalizrcluster.u64wunr.mongodb.net/?retryWrites=true&w=majority',
-    mongoOptions: advancedOptions
-  }),
-  name: 'currentSession',
-  secret: 'its my secret',
-  cookie: { 
-    maxAge: 60000,
-    secure: true
-   }, // value of maxAge is defined in milliseconds. 
-  resave: false,
-  saveUninitialized: false,
-}));
 
 
 
